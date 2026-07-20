@@ -1,32 +1,85 @@
-import { NativeTabs } from 'expo-router/unstable-native-tabs';
-import { useColorScheme } from 'react-native';
-
-import { Colors } from '@/constants/theme';
+import React from 'react';
+import { BottomNavigation } from 'react-native-paper';
+import { Tabs } from 'expo-router';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function AppTabs() {
-  const scheme = useColorScheme();
-  const colors = Colors[scheme === 'unspecified' ? 'light' : scheme];
-
   return (
-    <NativeTabs
-      backgroundColor={colors.background}
-      indicatorColor={colors.backgroundElement}
-      labelStyle={{ selected: { color: colors.text } }}>
-      <NativeTabs.Trigger name="index">
-        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/home.png')}
-          renderingMode="template"
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+      }}
+      tabBar={({ navigation, state, descriptors, insets }) => (
+        <BottomNavigation.Bar
+          navigationState={state}
+          safeAreaInsets={insets}
+          onTabPress={({ route, preventDefault }) => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+            if (event.defaultPrevented) {
+              preventDefault();
+            } else {
+             navigation.navigate(route.name, route.params);
+            }
+          }}
+          renderIcon={({ route, focused, color }) => {
+            const { options } = descriptors[route.key];
+            if (options.tabBarIcon) {
+              return options.tabBarIcon({ focused, color, size: 24 });
+            }
+            return null;
+          }}
+          getLabelText={({ route }: any) => {
+            const { options } = descriptors[route.key];
+            const label =
+              options.tabBarLabel !== undefined
+                ? options.tabBarLabel
+                : options.title !== undefined
+                ? options.title
+                : route.name;
+            return label as string;
+          }}
         />
-      </NativeTabs.Trigger>
-
-      <NativeTabs.Trigger name="explore">
-        <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/explore.png')}
-          renderingMode="template"
-        />
-      </NativeTabs.Trigger>
-    </NativeTabs>
+      )}>
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Dashboard',
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons name={focused ? "view-dashboard" : "view-dashboard-outline"} color={color} size={24} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="medicines"
+        options={{
+          title: 'Medicines',
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons name={focused ? "pill" : "pill"} color={color} size={24} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="chat"
+        options={{
+          title: 'Assistant',
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons name={focused ? "message-text" : "message-text-outline"} color={color} size={24} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons name={focused ? "account" : "account-outline"} color={color} size={24} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }

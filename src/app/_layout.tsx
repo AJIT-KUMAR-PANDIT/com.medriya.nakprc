@@ -1,10 +1,9 @@
-import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme, ThemeProvider } from 'expo-router';
+import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme, ThemeProvider, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'react-native';
 import { PaperProvider, MD3LightTheme, MD3DarkTheme, adaptNavigationTheme } from 'react-native-paper';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -41,7 +40,10 @@ export default function TabLayout() {
     <PaperProvider theme={theme}>
       <ThemeProvider value={theme}>
         <AnimatedSplashOverlay />
-        <AppTabs />
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="add-medicine" options={{ presentation: 'modal', headerShown: false }} />
+        </Stack>
       </ThemeProvider>
     </PaperProvider>
   );

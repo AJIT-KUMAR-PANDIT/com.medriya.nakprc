@@ -1,9 +1,11 @@
 import React from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { Text, List, Avatar, FAB, useTheme } from 'react-native-paper';
+import { useRouter } from 'expo-router';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 export default function Medicines() {
+  const router = useRouter();
   const theme = useTheme();
 
   const medicines = [
@@ -41,7 +43,7 @@ export default function Medicines() {
         icon="plus"
         style={[styles.fab, { backgroundColor: theme.colors.primaryContainer }]}
         color={theme.colors.onPrimaryContainer}
-        onPress={() => console.log('Add Medicine')}
+        onPress={() => router.push('/add-medicine')}
       />
     </View>
   );
